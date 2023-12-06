@@ -1,0 +1,1 @@
+// for our player and npcs - similar to what we did in starfighter
