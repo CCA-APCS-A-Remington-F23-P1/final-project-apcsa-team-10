@@ -82,6 +82,20 @@ public class Block{
       }
     }
 
+  public void drawHealthBar( Graphics window )
+  {    
+    try
+    {
+      URL url = getClass().getResource("/gameImages/healthbar.png");
+      Image image = ImageIO.read(url);
+      window.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
+    }
+    catch(Exception e)
+    {
+      System.out.println("cannot fetch resource!");
+    }
+  }
+
   public boolean equals(Object obj) {
     Block other = (Block) obj;
     if (other.getWidth() == getWidth() && other.getHeight() == getHeight() && other.getX() == getX() && other.getY() == getY()) {

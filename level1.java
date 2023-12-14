@@ -23,6 +23,8 @@ public class level1 extends Canvas implements KeyListener, Runnable {
   private boolean gravityDir; 
   private long jumpTimer; 
   private Block coin;
+  private Block healthBar;
+  private int lives; 
 
   public level1() {
     setBackground(Color.black);
@@ -31,8 +33,11 @@ public class level1 extends Canvas implements KeyListener, Runnable {
     player = new Player(50, 100, 30, 30, 2);
     testBlock = new Block(50, 50, 30, 30);
     coin = new Block(540, 540, 30, 30);
+    healthBar = new Block(20, 20, 235, 59);
+    
     gravityDir = true; 
     jumpTimer = 51; 
+    lives = 171; 
 
     enemies = new ArrayList<Enemy>();
     enemies.add(new Enemy(10, 100, 30, 30, 1));
@@ -77,6 +82,8 @@ public class level1 extends Canvas implements KeyListener, Runnable {
     graphToBack.setColor(Color.WHITE);
     graphToBack.fillRect(0,0,800,600); 
 
+   
+
     jumpTimer++; 
     if(jumpTimer >= 30) {
       gravityDir = true; 
@@ -85,6 +92,7 @@ public class level1 extends Canvas implements KeyListener, Runnable {
       gravityDir = false; 
     }
 
+    
 
     player.draw(graphToBack);
     for (Enemy e : enemies) {
@@ -94,6 +102,10 @@ public class level1 extends Canvas implements KeyListener, Runnable {
       e.backAndForth(startPos, endPos);
     }
     coin.drawCoin(graphToBack);
+    healthBar.drawHealthBar(graphToBack);
+
+    graphToBack.setColor(Color.RED);
+    graphToBack.fillRect(79,40,lives,19); 
 
     for(Block b : platforms){
       b.draw(graphToBack);
