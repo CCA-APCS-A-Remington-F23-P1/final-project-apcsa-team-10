@@ -83,7 +83,7 @@ public class Block{
     }
 
   public boolean equals(Object obj) {
-    block other = (block) obj;
+    Block other = (Block) obj;
     if (other.getWidth() == getWidth() && other.getHeight() == getHeight() && other.getX() == getX() && other.getY() == getY()) {
       return true;
     }

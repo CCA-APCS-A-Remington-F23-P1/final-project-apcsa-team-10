@@ -10,12 +10,12 @@ import java.awt.image.BufferedImage;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class level1 extends Canvas implements KeyListener, Runnable {
+public class level2 extends Canvas implements KeyListener, Runnable {
 
   private boolean[] keys;
   private BufferedImage back;
   private Player player;
-  private ArrayList<Enemy> enemies;
+  private Enemy enemy;
   private Block testBlock; 
   private ArrayList<Block> platforms; 
   private ArrayList<Block> walls;
@@ -24,19 +24,16 @@ public class level1 extends Canvas implements KeyListener, Runnable {
   private long jumpTimer; 
   private Block coin;
 
-  public level1() {
+  public level2() {
     setBackground(Color.black);
     keys = new boolean[7];
 
     player = new Player(50, 100, 30, 30, 2);
+    enemy = new Enemy(10, 100, 30, 30, 1);
     testBlock = new Block(50, 50, 30, 30);
     coin = new Block(540, 540, 30, 30);
     gravityDir = true; 
     jumpTimer = 51; 
-
-    enemies = new ArrayList<Enemy>();
-    enemies.add(new Enemy(10, 100, 30, 30, 1));
-    enemies.add(new Enemy(200, 100, 30, 30, 1));
 
     platforms = new ArrayList<Block>();
     platforms.add(new Block(120, 200, 100, 10));
@@ -87,12 +84,8 @@ public class level1 extends Canvas implements KeyListener, Runnable {
 
 
     player.draw(graphToBack);
-    for (Enemy e : enemies) {
-      e.draw(graphToBack);
-      int startPos = e.getX();
-      int endPos = e.getX() + 100;
-      e.backAndForth(startPos, endPos);
-    }
+    enemy.draw(graphToBack);
+    enemy.backAndForth(10, 100);
     coin.drawCoin(graphToBack);
 
     for(Block b : platforms){
@@ -103,9 +96,7 @@ public class level1 extends Canvas implements KeyListener, Runnable {
     }
 
     if (player.collides(coin)) {
-      player.setX(120);
-      player.setY(200);
-      GameRunner run = new GameRunner(2);
+      System.out.println("LEVEL2LEVEL2LEVEL2LEVEL2");
     }
 
     isOnPlatform = false;
