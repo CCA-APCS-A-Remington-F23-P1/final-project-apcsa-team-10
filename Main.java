@@ -1,9 +1,6 @@
-public class Main {
-
+class Main {
   public static void main(String[] args) {
-    System.out.println("hello");
-    // TODO: run Game.java
+     GameRunner.main(args);
   }
 
 }
-https://replit.com/join/taidtwsotj-eitanhakak
