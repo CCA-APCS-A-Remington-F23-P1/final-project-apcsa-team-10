@@ -20,6 +20,8 @@ class MainMenu extends JFrame {
   private static final int MENU_HEIGHT = 600;
   private String[] gameArgs;
 
+  private Block startBut = new Block(MENU_WIDTH / 2 - 50, MENU_HEIGHT /2 - 50, 100, 50, Color.GREEN);
+
   public MainMenu(String[] args) {
     super("Heroic Quest - Main Menu");
     setSize(MENU_WIDTH, MENU_HEIGHT);
@@ -27,22 +29,20 @@ class MainMenu extends JFrame {
 
     URL imageURL = getClass().getResource("/gameImages/mainbackground.jpg");
     Image backgroundImage = new ImageIcon(imageURL).getImage();
-    setContentPane(new JPanel() {
-      @Override
-      protected void paintComponent(Graphics g){
-        super.paintComponent(g);
-        g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-      }
-    });
+
+    URL imageURL2 = getClass().getResource("/gameImages/startbutton.png");
+    Image button1= new ImageIcon(imageURL2).getImage();
+    
+   
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-    JButton startButton = new JButton("Start Game");
-    JButton endButton = new JButton("Exit Game");
+    JButton startBut = createButton("", "/gameImages/startbutton.png");
+    JButton endBut = createButton("Exit", "/gameImages/exitbutton.jpg");
 
-    startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    endButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    startBut.setAlignmentX(Component.CENTER_ALIGNMENT);
+    endBut.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-    startButton.addActionListener(new ActionListener() {
+    startBut.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         dispose();
@@ -50,20 +50,46 @@ class MainMenu extends JFrame {
       }
     });
 
-    endButton.addActionListener(new ActionListener() {
+    endBut.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         System.exit(0);
       }
     });
 
+    setContentPane(new JPanel() {
+      @Override
+      protected void paintComponent(Graphics g){
+        super.paintComponent(g);
+        g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        // g.drawImage(button1, 200, 0, 136, 56, this);
+     
+        
+
+      }
+    });
+
+    startBut.setAlignmentX(Component.CENTER_ALIGNMENT);
+    endBut.setAlignmentX(Component.CENTER_ALIGNMENT);
+
     add(Box.createVerticalGlue());
-    add(startButton);
-    add(Box.createVerticalStrut(15));
-    add(endButton);
+    add(startBut);
+    add(Box.createVerticalStrut(10));
+    add(endBut);
     add(Box.createVerticalGlue());
+  
 
     setLocationRelativeTo(null);
     this.gameArgs = args;
+  }
+
+  private JButton createButton(String text, String iconPath){
+    JButton button = new JButton(text);
+    URL iconURL = getClass().getResource(iconPath);
+    if(iconURL != null){
+      ImageIcon icon = new ImageIcon(iconURL);
+      button.setIcon(icon);
+    }
+    return button;
   }
 }
