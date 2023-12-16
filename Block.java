@@ -57,6 +57,14 @@ public class Block{
     yPos = y;
   }
 
+  public void setWidth(int w) {
+    width = w;
+  }
+
+  public void setHeight(int h) {
+    height = h;
+  }
+
   public void draw(Graphics window) {
     //uncomment after you write the set and get methods
     window.setColor(color);

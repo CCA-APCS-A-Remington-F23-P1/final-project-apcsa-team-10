@@ -16,7 +16,6 @@ public class level1 extends Canvas implements KeyListener, Runnable {
   private BufferedImage back;
   private Player player;
   private ArrayList<Enemy> enemies;
-  private Block testBlock; 
   private ArrayList<Block> platforms; 
   private ArrayList<Block> walls;
   private boolean isOnPlatform; 
@@ -30,8 +29,7 @@ public class level1 extends Canvas implements KeyListener, Runnable {
     setBackground(Color.black);
     keys = new boolean[7];
 
-    player = new Player(50, 100, 30, 30, 2);
-    testBlock = new Block(50, 50, 30, 30);
+    player = new Player(50, 570, 30, 30, 2);
     coin = new Block(540, 540, 30, 30);
     healthBar = new Block(20, 20, 235, 59);
     
@@ -40,18 +38,20 @@ public class level1 extends Canvas implements KeyListener, Runnable {
     lives = 171; 
 
     enemies = new ArrayList<Enemy>();
-    enemies.add(new Enemy(10, 100, 30, 30, 1));
-    enemies.add(new Enemy(200, 100, 30, 30, 1));
+    enemies.add(new Enemy(10, 150, 30, 30, 1));
+    enemies.add(new Enemy(400, 150, 30, 30, 1));
+    enemies.add(new Enemy(400, 540, 30, 30, 1));
+    enemies.add(new Enemy(470, 270, 30, 30, 2));
 
     platforms = new ArrayList<Block>();
     platforms.add(new Block(120, 200, 100, 10));
-    platforms.add(new Block(30, 300, 100, 10));
+    platforms.add(new Block(0, 300, 150, 10));
     platforms.add(new Block(120, 400, 100, 10));
-    platforms.add(new Block(30, 500, 100, 10));
+    platforms.add(new Block(0, 500, 150, 10));
     platforms.add(new Block(430, 200, 100, 10));
-    platforms.add(new Block(520, 300, 100, 10));
-    platforms.add(new Block(430, 400, 100, 10));
-    platforms.add(new Block(520, 500, 100, 10));
+    platforms.add(new Block(350, 300, 250, 10));
+    platforms.add(new Block(430, 400, 250, 10));
+    platforms.add(new Block(500, 500, 120, 10));
 
     walls = new ArrayList<Block>();
     walls.add(new Block(300, 200, 50, 600));
@@ -95,17 +95,32 @@ public class level1 extends Canvas implements KeyListener, Runnable {
     
 
     player.draw(graphToBack);
-    for (Enemy e : enemies) {
-      e.draw(graphToBack);
-      int startPos = e.getX();
-      int endPos = e.getX() + 100;
-      e.backAndForth(startPos, endPos);
-    }
     coin.drawCoin(graphToBack);
     healthBar.drawHealthBar(graphToBack);
-
     graphToBack.setColor(Color.RED);
     graphToBack.fillRect(79,40,lives,19); 
+    
+    for (int i = 0; i < enemies.size(); i++) {
+      enemies.get(i).draw(graphToBack);
+      if (i == 0) {
+        enemies.get(i).backAndForth(10, 150);
+      }
+      if (i == 1) {
+        enemies.get(i).backAndForth(400, 540);
+      }
+      if (i == 2) {
+        enemies.get(i).backAndForth(400, 560);
+      }
+      if (i == 3) {
+        enemies.get(i).setDirection(false);
+        enemies.get(i).backAndForth(370, 500);
+      }
+      if (player.collidesEnemy(enemies.get(i)))  {
+        lives-=57;
+        enemies.remove(i);
+        i--;
+      }
+    }
 
     for(Block b : platforms){
       b.draw(graphToBack);
@@ -126,8 +141,8 @@ public class level1 extends Canvas implements KeyListener, Runnable {
     if(player.getX() < 0) {
       player.setX(0);
     }
-    if(player.getX()+player.getWidth() > 800) {
-      player.setX(800-player.getWidth());
+    if(player.getX()+player.getWidth() > 650) {
+      player.setX(650-player.getWidth());
     }
     if(player.getY() < 0) {
       player.setY(0);
@@ -142,21 +157,17 @@ public class level1 extends Canvas implements KeyListener, Runnable {
     //checks for collision on bottom of platofrms 
     for(Block b : platforms) {
       if(player.didCollideTop(b)) {
-        System.out.println("CTOP");
         isOnPlatform = true;
       }
       if(player.didCollideBottom(b)){
-        System.out.println("CBOTTOM");
         player.setY(player.getY()+player.getSpeed());
         gravityDir=true;
         jumpTimer = 100000;
       }
       if(player.didCollideRight(b)) {
-        System.out.println("CRIGHT");
         player.setX(player.getX()+player.getSpeed());
       }
       if(player.didCollideLeft(b)) {
-        System.out.println("CLEFT");
         player.setX(player.getX()-player.getSpeed());
       }
     }
@@ -193,20 +204,16 @@ public class level1 extends Canvas implements KeyListener, Runnable {
     //checks for keypresses 
     if (keys[0]) {
       player.move("LEFT");
-      System.out.println("LEFT");
     }
     if (keys[1]) {
       player.move("RIGHT");
-      System.out.println("RIGHT");
     }
     if (keys[2] && isOnPlatform) {
       jumpTimer = 0; 
       player.move("UP");
-      System.out.println("UP");
     }
     if (keys[3] && !isOnPlatform) {
       player.move("DOWN");
-      System.out.println("DOWN");
     }
     if (keys[4]) {
 

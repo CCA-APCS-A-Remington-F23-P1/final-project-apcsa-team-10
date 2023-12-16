@@ -79,6 +79,13 @@ public class Player extends MovingThing implements Collideable
     return false; 
   }
 
+  public boolean collidesEnemy(Enemy enemy){
+    if(enemy.getX()+enemy.getWidth()>=getX() && enemy.getX()<=getX()+getWidth() && enemy.getY()+enemy.getHeight()>=getY() && enemy.getY()<=getY()+getHeight()){
+      return true; 
+    }
+    return false; 
+  }
+
   // PLATFORM COLLISIONS
 
   public boolean didCollideLeft(Object obj) {
