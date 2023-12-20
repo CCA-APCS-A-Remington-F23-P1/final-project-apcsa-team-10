@@ -40,6 +40,6 @@ public class GameRunner extends JFrame
 
   public static void main(int x)
   {
-    GameRunner run = new GameRunner(4);
+    GameRunner run = new GameRunner(x);
   }
 }
