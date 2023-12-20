@@ -45,7 +45,6 @@ class lvlSelectMenu extends JFrame {
     level1button.setAlignmentX(Component.CENTER_ALIGNMENT);
     level2button.setAlignmentX(Component.CENTER_ALIGNMENT);
     level3button.setAlignmentX(Component.CENTER_ALIGNMENT);
-
     backbutton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 

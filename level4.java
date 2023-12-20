@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class level3 extends Canvas implements KeyListener, Runnable {
+public class level4 extends Canvas implements KeyListener, Runnable {
 
   private boolean[] keys;
   private BufferedImage back;
@@ -25,7 +25,7 @@ public class level3 extends Canvas implements KeyListener, Runnable {
   private Block healthBar;
   private int lives;
 
-  public level3() {
+  public level4() {
     setBackground(Color.black);
     keys = new boolean[7];
 
@@ -55,7 +55,6 @@ public class level3 extends Canvas implements KeyListener, Runnable {
     walls = new ArrayList<Block>();
     walls.add(new Block(0, 200, 20, 600));
     walls.add(new Block(200, 200, 20, 600));
-
 
     this.addKeyListener(this);
     new Thread(this).start();
@@ -284,4 +283,3 @@ public class level3 extends Canvas implements KeyListener, Runnable {
     } catch (Exception e) {}
   }
 }
-

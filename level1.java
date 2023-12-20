@@ -10,6 +10,11 @@ import java.awt.image.BufferedImage;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.JComponent;
+import javax.swing.*;
+import java.awt.*;
+import javax.swing.Icon;
+import java.net.URL;
 import java.io.File;
 import java.net.URL;
 import java.awt.Image;
@@ -41,16 +46,17 @@ public class level1 extends Canvas implements KeyListener, Runnable {
     player = new Player(50, 570, 30, 30, 2);
     coin = new Block(540, 540, 30, 30);
     healthBar = new Block(20, 20, 235, 59);
+
+    enemies = new ArrayList < Enemy > ();
+    enemies.add(new Enemy(10, 150, 30, 30));
+    enemies.add(new Enemy(400, 150, 30, 30));
+    enemies.add(new Enemy(400, 540, 30, 30));
+    enemies.add(new Enemy(470, 270, 30, 30));
     
     gravityDir = true; 
     jumpTimer = 51; 
     shotTimer = 0; 
 
-    enemies = new ArrayList<Enemy>();
-    enemies.add(new Enemy(10, 150, 30, 30));
-    enemies.add(new Enemy(400, 150, 30, 30));
-    enemies.add(new Enemy(400, 540, 30, 30));
-    enemies.add(new Enemy(470, 270, 30, 30));
 
     platforms = new ArrayList<Block>();
     platforms.add(new Block(120, 200, 100, 20));
@@ -62,7 +68,7 @@ public class level1 extends Canvas implements KeyListener, Runnable {
     platforms.add(new Block(430, 400, 250, 20));
     platforms.add(new Block(500, 500, 120, 20));
 
-    walls = new ArrayList<Block>();
+    walls = new ArrayList < Block > ();
     walls.add(new Block(300, 200, 50, 600));
     // walls.add(new Block(300, 200, 50, 50));
     // walls.add(new Block(300, 250, 50, 50));
@@ -73,7 +79,6 @@ public class level1 extends Canvas implements KeyListener, Runnable {
     // walls.add(new Block(300, 500, 50, 50));
     // walls.add(new Block(300, 550, 50, 50));
     
-
 
     this.addKeyListener(this);
     new Thread(this).start();
@@ -106,7 +111,7 @@ public class level1 extends Canvas implements KeyListener, Runnable {
   public void paint(Graphics window) {
     //set up the double buffering to make the game animation nice and smooth
     Graphics2D twoDGraph = (Graphics2D) window;
-    
+  
 
     // press p (pause)
     if (keys[5]) {
@@ -206,7 +211,7 @@ public class level1 extends Canvas implements KeyListener, Runnable {
       }
   
       isOnPlatform = false;
-  
+
       //make it so that the player cant go off the screen 
       if(player.getX() < 0) {
         player.setX(0);

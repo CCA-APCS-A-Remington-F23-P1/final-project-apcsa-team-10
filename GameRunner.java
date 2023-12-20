@@ -28,6 +28,7 @@ public class GameRunner extends JFrame
 
       getContentPane().add(lvl3);
     }
+
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setVisible(true);
   }
