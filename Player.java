@@ -12,20 +12,16 @@ public class Player extends MovingThing implements Collideable
 {
   private int speed;
   private Image image;
-<<<<<<< HEAD
   private int lives; 
   private String playerName; 
-
-=======
   private boolean movingRight;
-  private int lives;
->>>>>>> 83a08961d7477f69e2e92c0fdeb7158a16d90d39
+ 
 
   public Player()
   {
  
     this(10, 10, 10,10, 3); 
-    lives = 3; 
+    lives = 171; 
     
   }
 
@@ -48,7 +44,6 @@ public class Player extends MovingThing implements Collideable
 
 
     speed=s;
-<<<<<<< HEAD
     try
     {
 
@@ -70,10 +65,8 @@ public class Player extends MovingThing implements Collideable
     {
       System.out.println("cannot fetch resource!");
     }
-=======
     movingRight = true;
     lives = 171;
->>>>>>> 83a08961d7477f69e2e92c0fdeb7158a16d90d39
   }
 
   public void setSpeed(int s)
