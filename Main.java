@@ -38,15 +38,24 @@ class MainMenu extends JFrame {
 
     JButton startButton = new JButton("Start Game");
     JButton endButton = new JButton("Exit Game");
+    JButton menuSelectButton = new JButton("Menu Select");
 
     startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     endButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    menuSelectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
     startButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         dispose();
-        GameRunner.main(args);
+        GameRunner.main(1);
+      }
+    });
+
+    menuSelectButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        MenuSelect.main(args); 
       }
     });
 
@@ -61,6 +70,9 @@ class MainMenu extends JFrame {
     add(startButton);
     add(Box.createVerticalStrut(15));
     add(endButton);
+    add(Box.createVerticalGlue());
+    add(menuSelectButton);
+    add(Box.createVerticalStrut(15));
     add(Box.createVerticalGlue());
 
     setLocationRelativeTo(null);

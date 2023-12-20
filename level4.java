@@ -10,15 +10,14 @@ import java.awt.image.BufferedImage;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class level2 extends Canvas implements KeyListener, Runnable {
+public class level4 extends Canvas implements KeyListener, Runnable {
 
   private boolean[] keys;
   private BufferedImage back;
   private Player player;
-  private Block testBlock; 
+  private ArrayList<Enemy> enemies;
   private ArrayList<Block> platforms; 
   private ArrayList<Block> walls;
-  private ArrayList<Enemy> enemies;
   private boolean isOnPlatform; 
   private boolean gravityDir; 
   private long jumpTimer; 
@@ -26,36 +25,36 @@ public class level2 extends Canvas implements KeyListener, Runnable {
   private Block healthBar;
   private int lives;
 
-  public level2() {
+  public level4() {
     setBackground(Color.black);
     keys = new boolean[7];
 
-    player = new Player(50, 100, 30, 30, 2);
-    coin = new Block(540, 540, 30, 30);
+    player = new Player(50, 570, 30, 30, 2);
+    coin = new Block(610, 530, 30, 30);
     healthBar = new Block(20, 20, 235, 59);
+
     gravityDir = true; 
     jumpTimer = 51; 
-    lives = 171;
+    lives = 171; 
 
     enemies = new ArrayList<Enemy>();
-    enemies.add(new Enemy(200, 100, 30, 30));
-    enemies.add(new Enemy(450, 100, 30, 30));
-    enemies.add(new Enemy(550, 260, 30, 30));
-    enemies.add(new Enemy(150, 540, 30, 30));
+    // enemies.add(new Enemy(250, 535, 30, 30, 1));
+    // enemies.add(new Enemy(700, 155, 30, 30, 1));
+    // enemies.add(new Enemy(700, 300, 30, 30, 1));
+    // enemies.add(new Enemy(610, 155, 30, 30, 2));
 
     platforms = new ArrayList<Block>();
-    platforms.add(new Block(120, 200, 100, 10));
-    platforms.add(new Block(30, 300, 100, 10));
-    platforms.add(new Block(120, 400, 100, 10));
-    platforms.add(new Block(30, 500, 100, 10));
-    platforms.add(new Block(430, 200, 100, 10));
-    platforms.add(new Block(520, 300, 100, 10));
-    platforms.add(new Block(430, 400, 100, 10));
-    platforms.add(new Block(520, 500, 100, 10));
+    platforms.add(new Block(150, 525, 50, 10));
+    platforms.add(new Block(20, 485, 45, 10));
+    platforms.add(new Block(150, 435, 50, 10));
+    platforms.add(new Block(20, 395, 45, 10));
+    platforms.add(new Block(150, 345, 50, 10));
+    platforms.add(new Block(20, 305, 45, 10));
+    platforms.add(new Block(150, 255, 50, 10));
 
     walls = new ArrayList<Block>();
-    walls.add(new Block(300, 200, 50, 600));
-
+    walls.add(new Block(0, 200, 20, 600));
+    walls.add(new Block(200, 200, 20, 600));
 
     this.addKeyListener(this);
     new Thread(this).start();
@@ -82,6 +81,8 @@ public class level2 extends Canvas implements KeyListener, Runnable {
     graphToBack.setColor(Color.WHITE);
     graphToBack.fillRect(0,0,800,600); 
 
+
+
     jumpTimer++; 
     if(jumpTimer >= 30) {
       gravityDir = true; 
@@ -91,28 +92,27 @@ public class level2 extends Canvas implements KeyListener, Runnable {
     }
 
 
+
     player.draw(graphToBack);
-    // enemy.draw(graphToBack);
     coin.drawCoin(graphToBack);
-    // enemy.backAndForth(10, 100);
     healthBar.drawHealthBar(graphToBack);
     graphToBack.setColor(Color.RED);
-    graphToBack.fillRect(79,40,lives,19);
+    graphToBack.fillRect(79,40,lives,19); 
 
     for (int i = 0; i < enemies.size(); i++) {
       enemies.get(i).draw(graphToBack);
       if (i == 0) {
-        enemies.get(i).backAndForth(130, 200);
+        enemies.get(i).backAndForth(150, 350);
       }
       if (i == 1) {
-        enemies.get(i).backAndForth(420, 500);
+        enemies.get(i).backAndForth(600, 750);
       }
       if (i == 2) {
-        enemies.get(i).backAndForth(500, 590);
+        enemies.get(i).backAndForth(600, 750);
       }
       if (i == 3) {
         enemies.get(i).setDirection(false);
-        enemies.get(i).backAndForth(70, 270);
+        enemies.get(i).backAndForth(500, 590);
       }
       if (player.collidesEnemy(enemies.get(i)))  {
         lives-=57;
@@ -122,17 +122,14 @@ public class level2 extends Canvas implements KeyListener, Runnable {
     }
 
     for(Block b : platforms){
-      b.drawPlatform(graphToBack);
+      b.draw(graphToBack, Color.BLACK);
     }
     for (Block b : walls) {
-      b.drawWall(graphToBack);
+      b.draw(graphToBack, Color.BLACK);
     }
 
     if (player.collides(coin)) {
-      //System.out.println("LEVEL2LEVEL2LEVEL2LEVEL2");
-      player.setX(120);
-      player.setY(200);
-      GameRunner run = new GameRunner(3);
+      System.exit(0);
     }
 
     isOnPlatform = false;
@@ -157,21 +154,17 @@ public class level2 extends Canvas implements KeyListener, Runnable {
     //checks for collision on bottom of platofrms 
     for(Block b : platforms) {
       if(player.didCollideTop(b)) {
-        System.out.println("CTOP");
         isOnPlatform = true;
       }
       if(player.didCollideBottom(b)){
-        System.out.println("CBOTTOM");
         player.setY(player.getY()+player.getSpeed());
-        gravityDir=true;
+        gravityDir = true;
         jumpTimer = 100000;
       }
       if(player.didCollideRight(b)) {
-        System.out.println("CRIGHT");
         player.setX(player.getX()+player.getSpeed());
       }
       if(player.didCollideLeft(b)) {
-        System.out.println("CLEFT");
         player.setX(player.getX()-player.getSpeed());
       }
     }
@@ -196,10 +189,10 @@ public class level2 extends Canvas implements KeyListener, Runnable {
 
     //gravity  
     if(!(isOnPlatform)){
-      if(gravityDir==true){
+      if(gravityDir == true){
       player.move("DOWN");  
       }
-      if(gravityDir==false){
+      if(gravityDir == false){
         player.move("UP");  
       }
     }
@@ -208,20 +201,16 @@ public class level2 extends Canvas implements KeyListener, Runnable {
     //checks for keypresses 
     if (keys[0]) {
       player.move("LEFT");
-      //System.out.println("LEFT");
     }
     if (keys[1]) {
       player.move("RIGHT");
-      //System.out.println("RIGHT");
     }
     if (keys[2] && isOnPlatform) {
       jumpTimer = 0; 
       player.move("UP");
-      //System.out.println("UP");
     }
     if (keys[3] && !isOnPlatform) {
       player.move("DOWN");
-      //System.out.println("DOWN");
     }
     if (keys[4]) {
 
