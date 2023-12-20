@@ -10,6 +10,12 @@ import java.awt.image.BufferedImage;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import java.net.URL;
+import java.io.File;
+import java.net.URL;
+import java.awt.Image;
+import javax.imageio.ImageIO;
+
 public class level3 extends Canvas implements KeyListener, Runnable {
 
   private boolean[] keys;
@@ -79,9 +85,16 @@ public class level3 extends Canvas implements KeyListener, Runnable {
     //create a graphics reference to the back ground image
     //we will draw all changes on the background image
     Graphics graphToBack = back.createGraphics();
-    graphToBack.setColor(Color.WHITE);
-    graphToBack.fillRect(0,0,800,600); 
-
+    // graphToBack.setColor(Color.WHITE);
+    // graphToBack.fillRect(0,0,800,600); 
+    try {
+      URL url = getClass().getResource("/gameImages/medievalbackground3.png");
+      Image image = ImageIO.read(url);
+      graphToBack.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
+    }
+    catch (Exception e) {
+      System.out.println("failed to load background");
+    }
 
 
     jumpTimer++; 
