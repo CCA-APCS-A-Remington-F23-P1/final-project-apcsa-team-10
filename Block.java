@@ -65,15 +65,39 @@ public class Block{
     height = h;
   }
 
-  public void draw(Graphics window) {
-    //uncomment after you write the set and get methods
-    window.setColor(color);
-    window.fillRect(getX(), getY(), getWidth(), getHeight());
-  }
 
   public void draw(Graphics window, Color col) {
     window.setColor(col);
     window.fillRect(getX(), getY(), getWidth(), getHeight());
+  }
+
+  
+  public void drawPlatform(Graphics window) {
+    //uncomment after you write the set and get methods
+    try
+    {
+      URL url = getClass().getResource("/gameImages/wood.png");
+      Image image = ImageIO.read(url);
+      window.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
+    }
+    catch(Exception e)
+    {
+      System.out.println("cannot fetch resource!");
+    }
+  }
+
+  public void drawWall(Graphics window) {
+    //uncomment after you write the set and get methods
+    try
+    {
+      URL url = getClass().getResource("/gameImages/wall.jpg");
+      Image image = ImageIO.read(url);
+      window.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
+    }
+    catch(Exception e)
+    {
+      System.out.println("cannot fetch resource!");
+    }
   }
 
   public void drawCoin( Graphics window )

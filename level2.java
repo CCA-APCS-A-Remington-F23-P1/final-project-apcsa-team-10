@@ -29,7 +29,7 @@ public class level2 extends Canvas implements KeyListener, Runnable {
     keys = new boolean[7];
 
     player = new Player(50, 100, 30, 30, 2);
-    enemy = new Enemy(10, 100, 30, 30, 1);
+    enemy = new Enemy(10, 100, 30, 30);
     testBlock = new Block(50, 50, 30, 30);
     coin = new Block(540, 540, 30, 30);
     gravityDir = true; 
@@ -89,10 +89,10 @@ public class level2 extends Canvas implements KeyListener, Runnable {
     coin.drawCoin(graphToBack);
 
     for(Block b : platforms){
-      b.draw(graphToBack);
+      b.drawPlatform(graphToBack);
     }
     for (Block b : walls) {
-      b.draw(graphToBack);
+      b.drawWall(graphToBack);
     }
 
     if (player.collides(coin)) {

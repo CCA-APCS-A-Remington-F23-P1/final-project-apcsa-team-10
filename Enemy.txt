@@ -1,0 +1,3 @@
+2
+/gameImages/Ogre.png
+/gameImages/FlippedOgre.png
