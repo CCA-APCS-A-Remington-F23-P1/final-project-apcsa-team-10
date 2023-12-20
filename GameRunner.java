@@ -26,8 +26,8 @@ public class GameRunner extends JFrame
     setVisible(true);
   }
 
-  public static void main( String args[] )
+  public static void main(int x)
   {
-    GameRunner run = new GameRunner(1);
+    GameRunner run = new GameRunner(x);
   }
 }

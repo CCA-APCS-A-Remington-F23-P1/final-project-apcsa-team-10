@@ -1,18 +1,27 @@
 import java.io.File;
 import java.net.URL;
+import java.util.Scanner;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import javax.imageio.ImageIO;
+import java.io.FileWriter; 
+
 
 public class Player extends MovingThing implements Collideable
 {
   private int speed;
   private Image image;
+  private int lives; 
+  private String playerName; 
+
 
   public Player()
   {
-    this(10,10,10,10,10);
+ 
+    this(10, 10, 10,10, 3); 
+    lives = 3; 
+    
   }
 
   public Player(int x, int y)
@@ -31,9 +40,23 @@ public class Player extends MovingThing implements Collideable
   public Player(int x, int y, int w, int h, int s)
   {
     super(x, y, w, h);
+
+
     speed=s;
     try
     {
+
+      File file = new File("Player.txt");
+      Scanner scan = new Scanner(file);
+
+      setX(scan.nextInt()); 
+      setY(scan.nextInt());
+      setWidth(scan.nextInt()); 
+      setHeight(scan.nextInt()); 
+      speed = scan.nextInt(); 
+      lives = scan.nextInt();
+      FileWriter myWriter = new FileWriter("Player.txt");
+
       URL url = getClass().getResource("/gameImages/Knight.png");
       image = ImageIO.read(url);
     }
@@ -70,6 +93,7 @@ public class Player extends MovingThing implements Collideable
     if(direction.equals("DOWN")){
       setY(getY()+speed);
     }
+
   }
 
   public boolean collides(Block platform){
