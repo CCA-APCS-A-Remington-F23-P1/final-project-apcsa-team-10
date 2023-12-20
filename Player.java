@@ -9,6 +9,8 @@ public class Player extends MovingThing implements Collideable
 {
   private int speed;
   private Image image;
+  private boolean movingRight;
+  private int lives;
 
   public Player()
   {
@@ -32,15 +34,8 @@ public class Player extends MovingThing implements Collideable
   {
     super(x, y, w, h);
     speed=s;
-    try
-    {
-      URL url = getClass().getResource("/gameImages/Knight.png");
-      image = ImageIO.read(url);
-    }
-    catch(Exception e)
-    {
-      System.out.println("cannot fetch resource!");
-    }
+    movingRight = true;
+    lives = 171;
   }
 
   public void setSpeed(int s)
@@ -55,14 +50,32 @@ public class Player extends MovingThing implements Collideable
     return speed;
   }
 
+  public void setDirection(boolean b) {
+    movingRight = b;
+  }
+
+  public boolean getDirection() {
+    return movingRight;
+  }
+
+  public void setLives(int l) {
+    lives = l;
+  }
+
+  public int getLives() {
+    return lives;
+  }
+
   public void move(String direction)
   {
     //add code here
     if(direction.equals("LEFT")){
       setX(getX()-speed);
+      setDirection(false);
     }
     if(direction.equals("RIGHT")){
       setX(getX()+speed);
+      setDirection(true);
     }
     if(direction.equals("UP")){
       setY(getY()-speed*2);
@@ -98,10 +111,6 @@ public class Player extends MovingThing implements Collideable
     Block other = (Block) obj;
     return other.getY()>getY() && other.getY()<getY()+getHeight() && other.getX()+other.getWidth()>=getX() && 
       other.getX()+other.getWidth() <= getX()+getWidth();
-
-    // return (getX() == other.getX() + other.getWidth())
-    // && (getY() < other.getY() + other.getHeight())
-    // && (getY() + getHeight() > other.getY());
   }
 
   public boolean didCollideTop(Object obj) {
@@ -114,10 +123,6 @@ public class Player extends MovingThing implements Collideable
       getY()+getHeight() <= other.getY()+other.getHeight()/2){return true;} 
 
     return false; 
-
-    // return (getY() + getHeight() == other.getY())
-    // && (getX() < other.getX() + other.getWidth())
-    // && (getX() + getWidth() > other.getX());
   }
 
   public boolean didCollideBottom(Object obj) {
@@ -142,12 +147,33 @@ public class Player extends MovingThing implements Collideable
       Block other = (Block) obj;
       return getX() + getWidth() == other.getX() && getY() >= other.getY() && getY() <= other.getY() + other.getHeight();
   }
-
+    
 
   public void draw( Graphics window )
-  {    //window.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
-    window.setColor(Color.BLUE); 
-    window.fillRect(getX(),getY(),getWidth(),getHeight());
+  {   
+    // FOR TESTING
+    // window.setColor(Color.BLUE); 
+    // window.fillRect(getX(),getY(),getWidth(),getHeight());
+
+    // draw the player
+    try
+    {
+      String filePath = "";
+      if (getDirection()) {
+        filePath = "/gameImages/Knight.png";
+      }
+      else {
+        filePath = "/gameImages/FlippedKnight.png";
+      }
+      URL url = getClass().getResource(filePath);
+      image = ImageIO.read(url);
+    }
+    catch(Exception e)
+    {
+      System.out.println("cannot fetch resource!");
+    }
+    window.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
+    
   }
 
   public String toString()
