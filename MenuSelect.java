@@ -5,22 +5,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
 
-class Main {
+class MenuSelect {
   public static void main(String[] args) {
     SwingUtilities.invokeLater(() -> {
-      MainMenu menu = new MainMenu(args);
+      lvlSelectMenu menu = new lvlSelectMenu(args);
       menu.setVisible(true);
     });
   }
 }
 
-class MainMenu extends JFrame {
+class lvlSelectMenu extends JFrame {
 
   private static final int MENU_WIDTH = 800;
   private static final int MENU_HEIGHT = 600;
   private String[] gameArgs;
 
-  public MainMenu(String[] args) {
+  public lvlSelectMenu(String[] args) {
     super("Heroic Quest - Main Menu");
     setSize(MENU_WIDTH, MENU_HEIGHT);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -36,44 +36,62 @@ class MainMenu extends JFrame {
     });
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-    JButton startButton = new JButton("Start Game");
-    JButton endButton = new JButton("Exit Game");
-    JButton menuSelectButton = new JButton("Menu Select");
+    JButton level1button = new JButton("Level 1");
+    JButton level2button = new JButton("Level 2");
+    JButton level3button = new JButton("Level 3");
+    JButton backbutton = new JButton("Back");
 
-    startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    endButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    menuSelectButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-    startButton.addActionListener(new ActionListener() {
+    level1button.setAlignmentX(Component.CENTER_ALIGNMENT);
+    level2button.setAlignmentX(Component.CENTER_ALIGNMENT);
+    level3button.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    backbutton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
+    level1button.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        dispose();
         GameRunner.main(1);
       }
     });
-
-    menuSelectButton.addActionListener(new ActionListener() {
+    level2button.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        MenuSelect.main(args); 
+        GameRunner.main(2);
+      }
+    });
+    level3button.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        GameRunner.main(3);
       }
     });
 
-    endButton.addActionListener(new ActionListener() {
+    backbutton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        System.exit(0);
+        Main.main(args); 
       }
     });
 
+
     add(Box.createVerticalGlue());
-    add(startButton);
+    add(level1button);
     add(Box.createVerticalStrut(15));
-    add(endButton);
+
     add(Box.createVerticalGlue());
-    add(menuSelectButton);
+    add(level2button);
     add(Box.createVerticalStrut(15));
+
     add(Box.createVerticalGlue());
+    add(level3button);
+    add(Box.createVerticalStrut(15));
+
+    add(Box.createVerticalGlue());
+    add(backbutton);
+    add(Box.createVerticalStrut(15));
+
 
     setLocationRelativeTo(null);
     this.gameArgs = args;
