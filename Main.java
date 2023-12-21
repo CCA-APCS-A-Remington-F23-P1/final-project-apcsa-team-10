@@ -1,9 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.Icon;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.BufferedWriter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
+import java.util.*;
 
 class Main {
   public static void main(String[] args) {
@@ -18,10 +23,22 @@ class MainMenu extends JFrame {
 
   private static final int MENU_WIDTH = 800;
   private static final int MENU_HEIGHT = 600;
+  private String selection;
   private String[] gameArgs;
+  private File file;
 
   public MainMenu(String[] args) {
     super("Heroic Quest - Main Menu");
+    try
+    {
+      file = new File("MainMenu.txt");
+      Scanner scan = new Scanner(file);
+      selection = scan.nextLine();
+    }
+    catch(Exception e)
+    {
+      System.out.println("cannot fetch resource!");
+    }
     setSize(MENU_WIDTH, MENU_HEIGHT);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -37,7 +54,7 @@ class MainMenu extends JFrame {
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
     JButton startButton = new JButton("Start Game");
-    JButton endButton = new JButton("Exit Game");
+    JButton endButton = new JButton(" Exit Game ");
     JButton menuSelectButton = new JButton("Menu Select");
 
     startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -47,22 +64,44 @@ class MainMenu extends JFrame {
     startButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        dispose();
-        GameRunner.main(1);
+        try {
+          BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+          writer.write("Start Game");
+          writer.flush();
+          dispose();
+          GameRunner.main(1);
+        } catch (IOException ex) {
+          ex.printStackTrace();
+        }
       }
     });
 
     menuSelectButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        MenuSelect.main(args); 
+        try {
+          BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+          writer.write("Menu Select");
+          writer.flush();
+          menuSelect.main(args); 
+        } catch (IOException ex) {
+          ex.printStackTrace();
+        }
       }
     });
 
     endButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        System.exit(0);
+        try {
+          File file = new File("MainMenu.txt");
+          BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+          writer.write("Exit Game");
+          writer.flush();
+          System.exit(0);
+        } catch (IOException ex) {
+          ex.printStackTrace();
+        }
       }
     });
 

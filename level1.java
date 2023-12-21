@@ -74,14 +74,6 @@ public class level1 extends Canvas implements KeyListener, Runnable {
 
     walls = new ArrayList < Block > ();
     walls.add(new Block(300, 200, 50, 600));
-    // walls.add(new Block(300, 200, 50, 50));
-    // walls.add(new Block(300, 250, 50, 50));
-    // walls.add(new Block(300, 300, 50, 50));
-    // walls.add(new Block(300, 350, 50, 50));
-    // walls.add(new Block(300, 400, 50, 50));
-    // walls.add(new Block(300, 450, 50, 50));
-    // walls.add(new Block(300, 500, 50, 50));
-    // walls.add(new Block(300, 550, 50, 50));
 
     try {
       File file = new File("level1.txt");

@@ -10,6 +10,13 @@ import java.awt.image.BufferedImage;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import java.util.Scanner;
+import java.io.FileWriter;
+
+import javax.swing.JComponent;
+import javax.swing.*;
+import java.awt.*;
+import javax.swing.Icon;
 import java.net.URL;
 import java.io.File;
 import java.net.URL;
@@ -27,12 +34,17 @@ public class level3 extends Canvas implements KeyListener, Runnable {
   private boolean isOnPlatform; 
   private boolean gravityDir; 
   private long jumpTimer; 
+  private long shotTimer;
   private Block coin;
   private Block healthBar;
-  private int lives;
+  private boolean pause;
+  private boolean won;
+  private boolean lost;
+  private int score;
+  FileWriter myWriter;
 
   public level3() {
-    setBackground(Color.black);
+    setBackground(Color.WHITE);
     keys = new boolean[7];
 
     player = new Player(50, 570, 30, 30, 2);
@@ -40,28 +52,34 @@ public class level3 extends Canvas implements KeyListener, Runnable {
     healthBar = new Block(20, 20, 235, 59);
 
     gravityDir = true; 
-    jumpTimer = 51; 
-    lives = 171; 
+    jumpTimer = 51;
+    shotTimer = 0;
 
     enemies = new ArrayList<Enemy>();
-    // enemies.add(new Enemy(250, 535, 30, 30, 1));
-    // enemies.add(new Enemy(700, 155, 30, 30, 1));
-    // enemies.add(new Enemy(700, 300, 30, 30, 1));
-    // enemies.add(new Enemy(610, 155, 30, 30, 2));
+    enemies.add(new Enemy(250, 535, 30, 30));
+    enemies.add(new Enemy(700, 155, 30, 30));
+    enemies.add(new Enemy(700, 300, 30, 30));
+    enemies.add(new Enemy(610, 155, 30, 30));
 
     platforms = new ArrayList<Block>();
-    platforms.add(new Block(150, 525, 50, 10));
-    platforms.add(new Block(20, 485, 45, 10));
-    platforms.add(new Block(150, 435, 50, 10));
-    platforms.add(new Block(20, 395, 45, 10));
-    platforms.add(new Block(150, 345, 50, 10));
-    platforms.add(new Block(20, 305, 45, 10));
-    platforms.add(new Block(150, 255, 50, 10));
+    platforms.add(new Block(100, 500, 80, 10));
+    platforms.add(new Block(240, 400, 50, 10));
+    platforms.add(new Block(350, 290, 30, 10));
+    platforms.add(new Block(470, 190, 130, 30));
+    platforms.add(new Block(660, 190, 130, 50));
 
     walls = new ArrayList<Block>();
-    walls.add(new Block(0, 200, 20, 600));
-    walls.add(new Block(200, 200, 20, 600));
+    walls.add(new Block(550, 200, 50, 600));
 
+    try {
+      File file = new File("level1.txt");
+      Scanner scan = new Scanner(file);
+      score = scan.nextInt();
+      System.out.println(score);
+
+    } catch (Exception e) {
+      System.out.println("cannot fetch resource!");
+    }
 
     this.addKeyListener(this);
     new Thread(this).start();
@@ -70,166 +88,228 @@ public class level3 extends Canvas implements KeyListener, Runnable {
   }
 
   public void update(Graphics window) {
-    paint(window);
+    Graphics2D twoDGraph = (Graphics2D)window;
+    if (back==null)
+        back = (BufferedImage)(createImage(getWidth(),getHeight()));
+    Graphics graphToBack = back.createGraphics();
+    if (lost) {
+        graphToBack.setColor(Color.BLACK);
+        graphToBack.fillRect(0,0,800,600);
+        graphToBack.setColor(Color.RED);
+        graphToBack.drawString("Game Over", 250, 230);
+        twoDGraph.drawImage(back, null, 0, 0);
+    } else if (won) {
+        graphToBack.setColor(Color.BLACK);
+        graphToBack.fillRect(0,0,800,600);
+        graphToBack.setColor(Color.GREEN);
+        graphToBack.drawString("You are victorious!", 250, 230);
+        twoDGraph.drawImage(back, null, 0, 0);
+    } else {
+        paint(window);
+    }
   }
 
   public void paint(Graphics window) {
     //set up the double buffering to make the game animation nice and smooth
     Graphics2D twoDGraph = (Graphics2D) window;
 
-    //take a snap shop of the current screen and same it as an image
-    //that is the exact same width and height as the current screen
-    if (back == null)
-      back = (BufferedImage)(createImage(getWidth(), getHeight()));
-
-    //create a graphics reference to the back ground image
-    //we will draw all changes on the background image
-    Graphics graphToBack = back.createGraphics();
-    // graphToBack.setColor(Color.WHITE);
-    // graphToBack.fillRect(0,0,800,600); 
-    try {
-      URL url = getClass().getResource("/gameImages/medievalbackground3.png");
-      Image image = ImageIO.read(url);
-      graphToBack.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
-    }
-    catch (Exception e) {
-      System.out.println("failed to load background");
+    // press p (pause)
+    if (keys[5]) {
+      pause = true;
     }
 
-
-    jumpTimer++; 
-    if(jumpTimer >= 30) {
-      gravityDir = true; 
-    }
-    if(jumpTimer < 30) {
-      gravityDir = false; 
+    // press r (resume)
+    if (keys[6]) {
+      pause = false;
     }
 
+    if(!pause){
 
+      //take a snap shop of the current screen and same it as an image
+      //that is the exact same width and height as the current screen
+      if (back == null)
+        back = (BufferedImage)(createImage(getWidth(), getHeight()));
 
-    player.draw(graphToBack);
-    coin.drawCoin(graphToBack);
-    healthBar.drawHealthBar(graphToBack);
-    graphToBack.setColor(Color.RED);
-    graphToBack.fillRect(79,40,lives,19); 
+      //create a graphics reference to the back ground image
+      //we will draw all changes on the background image
+      Graphics graphToBack = back.createGraphics();
+      graphToBack.setColor(Color.WHITE);
+      graphToBack.fillRect(0,0,800,600); 
 
-    for (int i = 0; i < enemies.size(); i++) {
-      enemies.get(i).draw(graphToBack);
-      if (i == 0) {
-        enemies.get(i).backAndForth(150, 350);
+      try {
+        URL url = getClass().getResource("/gameImages/medievalbackground3.png");
+        Image image = ImageIO.read(url);
+        graphToBack.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
       }
-      if (i == 1) {
-        enemies.get(i).backAndForth(600, 750);
+      catch (Exception e) {
+        System.out.println("failed to load background");
       }
-      if (i == 2) {
-        enemies.get(i).backAndForth(600, 750);
+
+      Font myFont = new Font("Courier New", 1, 17);
+      graphToBack.setFont(myFont);
+      graphToBack.setColor(Color.WHITE);
+      graphToBack.fillRect(300, 32, 150, 32);
+      graphToBack.setColor(Color.BLACK);
+      graphToBack.drawString("Score: " + score, 315, 54);
+
+      jumpTimer++; 
+      if(jumpTimer >= 30) {
+        gravityDir = true; 
       }
-      if (i == 3) {
-        enemies.get(i).setDirection(false);
-        enemies.get(i).backAndForth(500, 590);
+      if(jumpTimer < 30) {
+        gravityDir = false; 
       }
-      if (player.collidesEnemy(enemies.get(i)))  {
-        lives-=57;
-        enemies.remove(i);
-        i--;
+
+      graphToBack.setColor(Color.WHITE);
+      player.draw(graphToBack);
+      coin.drawCoin(graphToBack);
+      healthBar.drawHealthBar(graphToBack);
+      graphToBack.setColor(Color.RED);
+      graphToBack.fillRect(79,40,player.getLives(),19); 
+
+      for (int i = 0; i < enemies.size(); i++) {
+        enemies.get(i).draw(graphToBack);
+        if (i == 0) {
+          enemies.get(i).backAndForth(150, 350);
+        }
+        if (i == 1) {
+          enemies.get(i).backAndForth(600, 750);
+        }
+        if (i == 2) {
+          enemies.get(i).backAndForth(600, 750);
+        }
+        if (i == 3) {
+          enemies.get(i).setDirection(false);
+          enemies.get(i).backAndForth(500, 590);
+        }
+        if (player.didCollideTop(enemies.get(i))) {
+          score += 20;
+          enemies.remove(i);
+          i--;
+        }
+        if (player.collidesEnemy(enemies.get(i)))  {
+          player.setLives(player.getLives()-57);
+          enemies.remove(i);
+          i--;
+          if (player.getLives() <= 0) {
+            lost = true;
+          }
+          if (shotTimer == 50) {
+            enemies.get(i).pickUpStone();
+            shotTimer = 0;
+          }
+        }
+        enemies.get(i).throwStones(graphToBack, player);
+        if (player.getLives() <= 0) {
+          lost = true;
+        }
       }
-    }
 
-    for(Block b : platforms){
-      b.draw(graphToBack, Color.BLACK);
-    }
-    for (Block b : walls) {
-      b.draw(graphToBack, Color.BLACK);
-    }
+      try {
+        myWriter = new FileWriter("level1.txt");
+        myWriter.write(Integer.toString(score));
+        myWriter.close(); // Don't forget to close the FileWriter when you're done writing.
+      } catch (Exception e) {
+        System.out.println("Cannot write to file!");
+      }
 
-    if (player.collides(coin)) {
-      System.exit(0);
-    }
+      for(Block b : platforms){
+        b.draw(graphToBack, Color.BLACK);
+      }
+      for (Block b : walls) {
+        b.draw(graphToBack, Color.BLACK);
+      }
 
-    isOnPlatform = false;
+      if (player.collides(coin)) {
+        player.setX(120);
+        player.setY(200);
+        System.exit(0);
+      }
 
-    //make it so that the player cant go off the screen 
-    if(player.getX() < 0) {
-      player.setX(0);
-    }
-    if(player.getX()+player.getWidth() > 790) {
-      player.setX(790-player.getWidth());
-    }
-    if(player.getY() < 0) {
-      player.setY(0);
-    }
-    if(player.getY()+player.getHeight() > 570) {
-      player.setY(570-player.getHeight());
-    }
+      isOnPlatform = false;
 
-    //check if the player is on any platforms
+      //make it so that the player cant go off the screen 
+      if(player.getX() < 0) {
+        player.setX(0);
+      }
+      if(player.getX()+player.getWidth() > 790) {
+        player.setX(790-player.getWidth());
+      }
+      if(player.getY() < 0) {
+        player.setY(0);
+      }
+      if(player.getY()+player.getHeight() > 570) {
+        player.setY(570-player.getHeight());
+      }
+
+      //check if the player is on any platforms
 
 
-    //checks for collision on bottom of platofrms 
-    for(Block b : platforms) {
-      if(player.didCollideTop(b)) {
+      //checks for collision on bottom of platofrms 
+      for(Block b : platforms) {
+        if(player.didCollideTop(b)) {
+          isOnPlatform = true;
+        }
+        if(player.didCollideBottom(b)){
+          player.setY(player.getY()+player.getSpeed());
+          gravityDir = true;
+          jumpTimer = 100000;
+        }
+        if(player.didCollideRight(b)) {
+          player.setX(player.getX()+player.getSpeed());
+        }
+        if(player.didCollideLeft(b)) {
+          player.setX(player.getX()-player.getSpeed());
+        }
+      }
+
+      // player is on floor
+      if (player.getY() + player.getHeight() == 570) {
         isOnPlatform = true;
       }
-      if(player.didCollideBottom(b)){
-        player.setY(player.getY()+player.getSpeed());
-        gravityDir = true;
-        jumpTimer = 100000;
-      }
-      if(player.didCollideRight(b)) {
-        player.setX(player.getX()+player.getSpeed());
-      }
-      if(player.didCollideLeft(b)) {
-        player.setX(player.getX()-player.getSpeed());
-      }
-    }
 
-    // player is on floor
-    if (player.getY() + player.getHeight() == 570) {
-      isOnPlatform = true;
-    }
+      //check if the player is touching any walls
+      for (Block b: walls) {
+        if (player.didCollideWallLeft(b)) {
+          player.setX(player.getX()-player.getSpeed());
+        }
+        if (player.didCollideWallRight(b)) {
+          player.setX(player.getX()+player.getSpeed());
+        }
+        if (player.collides(b)) {
+          isOnPlatform = true;
+        }
+      }
 
-    //check if the player is touching any walls
-    for (Block b: walls) {
-      if (player.didCollideWallLeft(b)) {
-        player.setX(player.getX()-player.getSpeed());
+      //gravity  
+      if(!(isOnPlatform)){
+        if(gravityDir == true){
+        player.move("DOWN");  
+        }
+        if(gravityDir == false){
+          player.move("UP");  
+        }
       }
-      if (player.didCollideWallRight(b)) {
-        player.setX(player.getX()+player.getSpeed());
-      }
-      if (player.collides(b)) {
-        isOnPlatform = true;
-      }
-    }
-
-    //gravity  
-    if(!(isOnPlatform)){
-      if(gravityDir == true){
-      player.move("DOWN");  
-      }
-      if(gravityDir == false){
-        player.move("UP");  
-      }
-    }
 
 
-    //checks for keypresses 
-    if (keys[0]) {
-      player.move("LEFT");
-    }
-    if (keys[1]) {
-      player.move("RIGHT");
-    }
-    if (keys[2] && isOnPlatform) {
-      jumpTimer = 0; 
-      player.move("UP");
-    }
-    if (keys[3] && !isOnPlatform) {
-      player.move("DOWN");
-    }
-    if (keys[4]) {
+      //checks for keypresses 
+      if (keys[0]) {
+        player.move("LEFT");
+      }
+      if (keys[1]) {
+        player.move("RIGHT");
+      }
+      if (keys[2] && isOnPlatform) {
+        jumpTimer = 0; 
+        player.move("UP");
+      }
+      if (keys[3] && !isOnPlatform) {
+        player.move("DOWN");
+      }
+      if (keys[4]) {
 
+      }
     }
-
 
     twoDGraph.drawImage(back, null, 0, 0);
   }
@@ -297,4 +377,3 @@ public class level3 extends Canvas implements KeyListener, Runnable {
     } catch (Exception e) {}
   }
 }
-
