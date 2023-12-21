@@ -83,7 +83,7 @@ class MainMenu extends JFrame {
           BufferedWriter writer = new BufferedWriter(new FileWriter(file));
           writer.write("Menu Select");
           writer.flush();
-          menuSelect.main(args); 
+          MenuSelect.main(args); 
         } catch (IOException ex) {
           ex.printStackTrace();
         }
