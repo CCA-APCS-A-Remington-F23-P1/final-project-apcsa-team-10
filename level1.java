@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import java.util.Scanner;
-import java.io.FileWriter; 
+import java.io.FileWriter;
 
 import javax.swing.JComponent;
 import javax.swing.*;
@@ -28,20 +28,20 @@ public class level1 extends Canvas implements KeyListener, Runnable {
   private boolean[] keys;
   private BufferedImage back;
   private Player player;
-  private ArrayList<Enemy> enemies;
-  private ArrayList<Block> platforms; 
-  private ArrayList<Block> walls;
-  private boolean isOnPlatform; 
-  private boolean gravityDir; 
-  private long jumpTimer; 
+  private ArrayList < Enemy > enemies;
+  private ArrayList < Block > platforms;
+  private ArrayList < Block > walls;
+  private boolean isOnPlatform;
+  private boolean gravityDir;
+  private long jumpTimer;
   private long shotTimer;
   private Block coin;
   private Block healthBar;
   private boolean pause;
   private boolean won;
   private boolean lost;
-  private int score; 
-  FileWriter myWriter; 
+  private int score;
+  FileWriter myWriter;
 
   public level1() {
     setBackground(Color.WHITE);
@@ -58,12 +58,11 @@ public class level1 extends Canvas implements KeyListener, Runnable {
     enemies.add(new Enemy(400, 540, 30, 30));
     enemies.add(new Enemy(470, 270, 30, 30));
 
-    gravityDir = true; 
-    jumpTimer = 51; 
-    shotTimer = 0; 
+    gravityDir = true;
+    jumpTimer = 51;
+    shotTimer = 0;
 
-
-    platforms = new ArrayList<Block>();
+    platforms = new ArrayList < Block > ();
     platforms.add(new Block(120, 200, 100, 20));
     platforms.add(new Block(0, 300, 150, 20));
     platforms.add(new Block(120, 400, 100, 20));
@@ -84,20 +83,15 @@ public class level1 extends Canvas implements KeyListener, Runnable {
     // walls.add(new Block(300, 500, 50, 50));
     // walls.add(new Block(300, 550, 50, 50));
 
+    try {
+      File file = new File("level1.txt");
+      Scanner scan = new Scanner(file);
+      score = scan.nextInt();
+      System.out.println(score);
 
-    try
-      {
-        File file = new File("level1.txt");
-        Scanner scan = new Scanner(file);
-        score = scan.nextInt();
-        System.out.println(score);
-
-      }
-      catch(Exception e)
-      {
-        System.out.println("cannot fetch resource!");
-      }
-
+    } catch (Exception e) {
+      System.out.println("cannot fetch resource!");
+    }
 
     this.addKeyListener(this);
     new Thread(this).start();
@@ -106,41 +100,31 @@ public class level1 extends Canvas implements KeyListener, Runnable {
   }
 
   public void update(Graphics window) {
-    Graphics2D twoDGraph = (Graphics2D)window;
-    try
-    {
-      myWriter.write(36);
-    }
-    catch(Exception e)
-    {
-      System.out.println("cannot fetch resource!");
-    }
+    Graphics2D twoDGraph = (Graphics2D) window;
 
-
-    if (back==null)
-        back = (BufferedImage)(createImage(getWidth(),getHeight()));
+    if (back == null)
+      back = (BufferedImage)(createImage(getWidth(), getHeight()));
     Graphics graphToBack = back.createGraphics();
     if (lost) {
-        graphToBack.setColor(Color.BLACK);
-        graphToBack.fillRect(0,0,800,600);
-        graphToBack.setColor(Color.RED);
-        graphToBack.drawString("Game Over", 250, 230);
-        twoDGraph.drawImage(back, null, 0, 0);
+      graphToBack.setColor(Color.BLACK);
+      graphToBack.fillRect(0, 0, 800, 600);
+      graphToBack.setColor(Color.RED);
+      graphToBack.drawString("Game Over", 250, 230);
+      twoDGraph.drawImage(back, null, 0, 0);
     } else if (won) {
-        graphToBack.setColor(Color.BLACK);
-        graphToBack.fillRect(0,0,800,600);
-        graphToBack.setColor(Color.GREEN);
-        graphToBack.drawString("You are victorious!", 250, 230);
-        twoDGraph.drawImage(back, null, 0, 0);
+      graphToBack.setColor(Color.BLACK);
+      graphToBack.fillRect(0, 0, 800, 600);
+      graphToBack.setColor(Color.GREEN);
+      graphToBack.drawString("You are victorious!", 250, 230);
+      twoDGraph.drawImage(back, null, 0, 0);
     } else {
-        paint(window);
+      paint(window);
     }
   }
 
   public void paint(Graphics window) {
     //set up the double buffering to make the game animation nice and smooth
     Graphics2D twoDGraph = (Graphics2D) window;
-
 
     // press p (pause)
     if (keys[5]) {
@@ -166,26 +150,24 @@ public class level1 extends Canvas implements KeyListener, Runnable {
       try {
         URL url = getClass().getResource("/gameImages/medievalbackground.png");
         Image image = ImageIO.read(url);
-        graphToBack.drawImage(image,getX(),getY(),getWidth(),getHeight(),null);
-      }
-      catch (Exception e) {
+        graphToBack.drawImage(image, getX(), getY(), getWidth(), getHeight(), null);
+      } catch (Exception e) {
         System.out.println("failed to load background");
       }
 
-      Font myFont = new Font ("Courier New", 1, 17);
+      Font myFont = new Font("Courier New", 1, 17);
       graphToBack.setFont(myFont);
       graphToBack.setColor(Color.WHITE);
-      graphToBack.fillRect(300,32,150,32);
+      graphToBack.fillRect(300, 32, 150, 32);
       graphToBack.setColor(Color.BLACK);
       graphToBack.drawString("Score: " + score, 315, 54);
 
-
-      jumpTimer++; 
-      if(jumpTimer >= 30) {
-        gravityDir = true; 
+      jumpTimer++;
+      if (jumpTimer >= 30) {
+        gravityDir = true;
       }
-      if(jumpTimer < 30) {
-        gravityDir = false; 
+      if (jumpTimer < 30) {
+        gravityDir = false;
       }
 
       shotTimer++;
@@ -195,7 +177,7 @@ public class level1 extends Canvas implements KeyListener, Runnable {
       coin.drawCoin(graphToBack);
       healthBar.drawHealthBar(graphToBack);
       graphToBack.setColor(Color.RED);
-      graphToBack.fillRect(79,40,player.getLives(),19); 
+      graphToBack.fillRect(79, 40, player.getLives(), 19);
 
       for (int i = 0; i < enemies.size(); i++) {
         enemies.get(i).draw(graphToBack);
@@ -212,8 +194,15 @@ public class level1 extends Canvas implements KeyListener, Runnable {
           enemies.get(i).setDirection(false);
           enemies.get(i).backAndForth(370, 500);
         }
-        if (player.collidesEnemy(enemies.get(i)))  {
-          player.setLives(player.getLives()-57);
+
+        if (player.didCollideTop(enemies.get(i))) {
+          score += 20;
+          enemies.remove(i);
+          i--;
+        }
+
+        if (player.collidesEnemy(enemies.get(i))) {
+          player.setLives(player.getLives() - 57);
           enemies.remove(i);
           i--;
           if (player.getLives() <= 0) {
@@ -231,19 +220,18 @@ public class level1 extends Canvas implements KeyListener, Runnable {
       }
 
       try {
-          myWriter = new FileWriter("level1.txt");
-          myWriter.write(Integer.toString(score));
-          myWriter.close(); // Don't forget to close the FileWriter when you're done writing.
+        myWriter = new FileWriter("level1.txt");
+        myWriter.write(Integer.toString(score));
+        myWriter.close(); // Don't forget to close the FileWriter when you're done writing.
       } catch (Exception e) {
-          System.out.println("Cannot write to file!");
+        System.out.println("Cannot write to file!");
       }
 
-
-      for(Block b : platforms){
+      for (Block b: platforms) {
         //b.drawPlatform(graphToBack);
         b.draw(graphToBack, Color.BLACK);
       }
-      for (Block b : walls) {
+      for (Block b: walls) {
         //b.drawWall(graphToBack);
         b.draw(graphToBack, Color.BLACK);
       }
@@ -251,43 +239,47 @@ public class level1 extends Canvas implements KeyListener, Runnable {
       if (player.collides(coin)) {
         player.setX(120);
         player.setY(200);
+        try {
+          myWriter = new FileWriter("level1.txt");
+          myWriter.write(Integer.toString(100));
+          myWriter.close(); // Don't forget to close the FileWriter when you're done writing.
+        } catch (Exception e) {
+          System.out.println("Cannot write to file!");
+        }
         GameRunner run = new GameRunner(2);
       }
 
       isOnPlatform = false;
 
       //make it so that the player cant go off the screen 
-      if(player.getX() < 0) {
+      if (player.getX() < 0) {
         player.setX(0);
       }
-      if(player.getX()+player.getWidth() > 650) {
-        player.setX(650-player.getWidth());
+      if (player.getX() + player.getWidth() > 650) {
+        player.setX(650 - player.getWidth());
       }
-      if(player.getY() < 0) {
+      if (player.getY() < 0) {
         player.setY(0);
       }
-      if(player.getY()+player.getHeight() > 570) {
-        player.setY(570-player.getHeight());
+      if (player.getY() + player.getHeight() > 570) {
+        player.setY(570 - player.getHeight());
       }
 
-
-
-
       //checks for collision on bottom of platofrms 
-      for(Block b : platforms) {
-        if(player.didCollideTop(b)) {
+      for (Block b: platforms) {
+        if (player.didCollideTop(b)) {
           isOnPlatform = true;
         }
-        if(player.didCollideBottom(b)){
-          player.setY(player.getY()+player.getSpeed());
-          gravityDir=true;
+        if (player.didCollideBottom(b)) {
+          player.setY(player.getY() + player.getSpeed());
+          gravityDir = true;
           jumpTimer = 30;
         }
-        if(player.didCollideRight(b)) {
-          player.setX(player.getX()+player.getSpeed());
+        if (player.didCollideRight(b)) {
+          player.setX(player.getX() + player.getSpeed());
         }
-        if(player.didCollideLeft(b)) {
-          player.setX(player.getX()-player.getSpeed());
+        if (player.didCollideLeft(b)) {
+          player.setX(player.getX() - player.getSpeed());
         }
       }
 
@@ -299,10 +291,10 @@ public class level1 extends Canvas implements KeyListener, Runnable {
       //check if the player is touching any walls
       for (Block b: walls) {
         if (player.didCollideWallLeft(b)) {
-          player.setX(player.getX()-player.getSpeed());
+          player.setX(player.getX() - player.getSpeed());
         }
         if (player.didCollideWallRight(b)) {
-          player.setX(player.getX()+player.getSpeed());
+          player.setX(player.getX() + player.getSpeed());
         }
         if (player.collides(b)) {
           isOnPlatform = true;
@@ -310,15 +302,14 @@ public class level1 extends Canvas implements KeyListener, Runnable {
       }
 
       //gravity  
-      if(!(isOnPlatform)){
-        if(gravityDir==true){
-        player.move("DOWN");  
+      if (!(isOnPlatform)) {
+        if (gravityDir == true) {
+          player.move("DOWN");
         }
-        if(gravityDir==false){
-          player.move("UP");  
+        if (gravityDir == false) {
+          player.move("UP");
         }
       }
-
 
       //checks for keypresses 
       if (keys[0]) {
@@ -328,7 +319,7 @@ public class level1 extends Canvas implements KeyListener, Runnable {
         player.move("RIGHT");
       }
       if (keys[2] && isOnPlatform) {
-        jumpTimer = 0; 
+        jumpTimer = 0;
         player.move("UP");
       }
       if (keys[3] && !isOnPlatform) {
