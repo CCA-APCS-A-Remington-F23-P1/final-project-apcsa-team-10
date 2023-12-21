@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
 
-class menuSelect {
+class MenuSelect {
   public static void main(String[] args) {
     SwingUtilities.invokeLater(() -> {
       lvlSelectMenu menu = new lvlSelectMenu(args);
